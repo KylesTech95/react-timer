@@ -25,9 +25,11 @@ export default class Display extends React.Component {
         <div className="display-container">
             <h2 className="label">Session</h2>
             <div className="time-container">
+                {/*minutes*/}
                 <h1 className="minutes">{this.state.session_min}</h1>
                 <h1 className="colon">:</h1>
-                <h1 className="seconds">{this.state.session_sec}</h1>
+                {/*seconds*/}
+                <h1 className="seconds">{}</h1>
             </div>
         </div>
            </> 

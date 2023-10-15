@@ -2,6 +2,7 @@ import React from 'react';
 
 
 export default class Session extends React.Component {
+    
     constructor(props){
         super(props);
         this.state={
@@ -10,14 +11,18 @@ export default class Session extends React.Component {
         }
     }
    handleUp = () => {
+    let min = document.querySelector('.minutes')
     this.setState({
         session_min: this.state.session_min < 60 ? this.state.session_min + 1 : this.state.session_min
     })
+    min.textContent = this.state.session_min < 60 ? this.state.session_min + 1 : this.state.session_min
    }
    handleDown = () => {
+    let min = document.querySelector('.minutes')
     this.setState({
         session_min: this.state.session_min > 1 ? this.state.session_min - 1 : this.state.session_min
     })
+    min.textContent = this.state.session_min > 1 ? this.state.session_min - 1 : this.state.session_min
    }
 
     render(){

@@ -50,7 +50,9 @@ body{
   position: absolute;
   font-size:20px;
   transition:.3s;
+  
 }
+
 #session-up,
 #break-up{
   left: -200%;
@@ -88,4 +90,8 @@ i:hover{
 
 .time-container{
   display:flex;
+}
+.minutes,
+.seconds{
+  font-size: 50px;
 }
