@@ -1,4 +1,5 @@
 import './App.css';
+import Controls from './controls.js'
 import Display from './display.js'
 
 function App() { 
@@ -9,6 +10,7 @@ function App() {
         <h1 className="timer-title">25 + 5 Clock</h1>
       </div>
       <Display/>
+      <Controls/>
     </div>
   );
 }

@@ -1,6 +1,8 @@
 import React from 'react';
 import Break from './break.js'
 import Session from './session.js'
+import Controls from './controls.js'
+
 
 
 export default class Display extends React.Component {
@@ -29,7 +31,7 @@ export default class Display extends React.Component {
                 <h1 className="minutes">{this.state.session_min}</h1>
                 <h1 className="colon">:</h1>
                 {/*seconds*/}
-                <h1 className="seconds">{}</h1>
+                <h1 className="seconds">{this.state.session_sec}</h1>
             </div>
         </div>
            </> 
