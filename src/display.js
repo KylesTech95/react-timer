@@ -34,6 +34,7 @@ export default class Display extends React.Component {
                 <h1 className="seconds">{this.state.session_sec}</h1>
             </div>
         </div>
+        <Controls minutes={this.state.session_min} seconds={this.state.session_sec}/>
            </> 
             )
     }

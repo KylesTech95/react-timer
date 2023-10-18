@@ -10,7 +10,7 @@ function App() {
         <h1 className="timer-title">25 + 5 Clock</h1>
       </div>
       <Display/>
-      <Controls/>
+
     </div>
   );
 }
