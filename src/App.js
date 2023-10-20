@@ -43,7 +43,6 @@ render(){
     </div>
   )
 }
-
 }
 class Timer extends React.Component{
   constructor(props){
@@ -73,8 +72,13 @@ class Timer extends React.Component{
       return(
         
           <div className="controls-actual-container">
+            <div className="play-container pause-container">
             <span id="start_stop" className='material-symbols-outlined play'>Play_Arrow</span>
+            </div>
+            <div className="reset-container">
             <span className='material-symbols-outlined reset'>Replay</span>
+            </div>
+            
           </div>
       )
     }
