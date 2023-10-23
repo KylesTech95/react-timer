@@ -37,7 +37,7 @@ render(){
       </div>
       <div className="session-controls">
         <span id="session-decrement"className='material-symbols-outlined material'>arrow_back_ios</span>{/*Down arrow*/}
-        <span id="session-length">25</span>
+        <span id="session-length"></span>
         <span id="session-increment" className='material-symbols-outlined material'>arrow_forward_ios</span>{/*Up arrow*/}
       </div>
     </div>
