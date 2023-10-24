@@ -70,9 +70,12 @@ color:var(--day-light-color)
 
 #time-left{
   font-size: 35px;
+<<<<<<< HEAD
   display: flex;
   align-items: center;
   justify-content: center;
+=======
+>>>>>>> 485574c557fde2465ee91abec5f7f5606d8da60e
 }
 .timer-container{
   display:flex;
