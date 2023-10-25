@@ -28,13 +28,13 @@ class Break extends React.Component{
           this.setState({
             count:this.state.count = 1
                     })
-          if(this.state.b_time[0] > 1){
+          if(this.state.b_time[0] > (this.state.min/this.state.min)){
             this.state.b_time[0] = this.state.b_time[0] - this.state.count
           }
         }} id="session-increment" className='material-symbols-outlined material'>arrow_forward_ios</span>{/*Up arrow*/}
 
 
-        <span id="session-length">{this.state.b_time[0]}</span>
+        <span id="break-length">{this.state.b_time[0]}</span>
 
       
         <span onClick={()=>{
@@ -43,7 +43,7 @@ class Break extends React.Component{
          this.setState({
            count:this.state.count = 1
                    })
-         if(this.state.b_time[0] > 0){
+         if(this.state.b_time[0] < this.state.min){
           this.state.b_time[0]= this.state.b_time[0] + this.state.count
          }
 
@@ -80,7 +80,7 @@ render(){
           this.setState({
             count:this.state.count = 1
                     })
-          if(this.state.s_time[0] > 1){
+          if(this.state.s_time[0] > (this.state.min/this.state.min)){
             this.state.s_time[0] = this.state.s_time[0] - this.state.count
             mins.textContent = (this.state.s_time[0])
           }
@@ -96,7 +96,7 @@ render(){
          this.setState({
            count:this.state.count = 1
                    })
-         if(this.state.s_time[0] > 0){
+         if(this.state.s_time[0] < this.state.min ){
           this.state.s_time[0]= this.state.s_time[0] + this.state.count
            mins.textContent = (this.state.s_time[0])
          }
@@ -164,7 +164,7 @@ class Controls extends React.Component{
             s_time: [this.state.s_time[0] = secs.textContent < 1 ? mins.textContent-=this.state.count : mins.textContent, this.state.s_time[1] = secs.textContent < (this.state.min-1) && secs.textContent > 0 ? secs.textContent : secs.textContent = 59],
             intervalTime: this.state.intervalTime = 500,
             intervalFn: this.state.intervalFn = setInterval(() => {
-              if(this.state.s_time[0] > 0 && this.state.s_time[1] > 0){
+              if(this.state.s_time[0] >= 0 && this.state.s_time[1] > 0){
                  this.setState({
                   s_time: [this.state.s_time[0] = mins.textContent, this.state.s_time[1] -= this.state.count]})
               
@@ -180,6 +180,10 @@ class Controls extends React.Component{
               
               secs.textContent = moreThan10(this.state.s_time[1])
               }
+              else{
+                this.setState({
+                  s_time: [this.state.s_time[0] = '00', this.state.s_time[1] = '00' ]})
+              }
               
             }, this.state.intervalTime),
             play_pause:this.state.play_pause = 'Pause'
@@ -190,8 +194,6 @@ class Controls extends React.Component{
         else{
           const Pause=()=>{
             this.setState({
-              // s_time: [this.state.s_time[0] = mins.textContent - this.state.count, this.state.s_time[1] = secs.textContent = 59],
-              // intervalTime: this.state.intervalTime = 500,
               intervalFn:this.state.intervalFn = clearInterval(this.state.intervalFn),
               play_pause:this.state.play_pause = 'Play_Arrow'
             })
@@ -199,7 +201,19 @@ class Controls extends React.Component{
           Pause()
         }  
       }
-   
+      Restart=()=>{
+        var mins = document.querySelector('#time-left>h3.display-mins')
+        var secs = document.querySelector('#time-left>h3.display-secs')
+        var s_min = document.querySelector('#session-length')
+        this.setState({
+          intervalFn:this.state.intervalFn = clearInterval(this.state.intervalFn),
+          play_pause:this.state.play_pause = 'Play_Arrow',
+          c:this.state.c = 0
+        })
+        mins.textContent = s_min.textContent
+        secs.textContent = '00'
+        console.log(s_min)
+      }
       
       
     render(){
@@ -210,7 +224,7 @@ class Controls extends React.Component{
             <span onClick={this.Play_pause} id="start_stop" className='material-symbols-outlined play'>{this.state.play_pause}</span>
             </div>
             <div className="reset-container">
-            <span className='material-symbols-outlined reset'>Replay</span>
+            <span onClick={this.Restart} className='material-symbols-outlined reset'>Replay</span>
             </div>
             
           </div>
