@@ -63,9 +63,14 @@ constructor(props){
     b_time:this.props.b_time,
     count: 0,
     min:this.props.min,
-    max:this.props.max
-  }
+    play_pause:'Play_Arrow',
+    handledown:this.props.uphandle,
+    handleup:this.props.downhandle,
+    intervalFn:this.props.intervalFn
+
   
+  
+  }
 }
 render(){
   return(
@@ -74,33 +79,36 @@ render(){
           <h2 id="session-label">Session Label</h2>
       </div>
       <div className="session-controls">
-        <span onClick={()=>{
-          var mins = document.querySelector('#time-left>h3.display-mins')
-          var secs = document.querySelector('#time-left>h3.display-secs')
-          this.setState({
+        <span onClick={() =>{
+
+            var mins = document.querySelector('#time-left>h3.display-mins')
+            var secs = document.querySelector('#time-left>h3.display-secs')
+            this.setState({
             count:this.state.count = 1
                     })
-          if(this.state.s_time[0] > (this.state.min/this.state.min)){
+            if(this.state.s_time[0] > (this.state.min/this.state.min)){
             this.state.s_time[0] = this.state.s_time[0] - this.state.count
             mins.textContent = (this.state.s_time[0])
-          }
-        }} id="session-increment" className='material-symbols-outlined material'>arrow_forward_ios</span>{/*Up arrow*/}
+    }
+}
+
+} id="session-increment" className='material-symbols-outlined material'>arrow_forward_ios</span>{/*Up arrow*/}
 
 
         <span id="session-length">{this.state.s_time[0]}</span>
 
       
-        <span onClick={()=>{
-         var mins = document.querySelector('#time-left>h3.display-mins')
-         var secs = document.querySelector('#time-left>h3.display-secs')
-         this.setState({
-           count:this.state.count = 1
-                   })
-         if(this.state.s_time[0] < this.state.min ){
-          this.state.s_time[0]= this.state.s_time[0] + this.state.count
-           mins.textContent = (this.state.s_time[0])
-         }
+        <span onClick={()=>{          
+            var mins = document.querySelector('#time-left>h3.display-mins')
+            this.setState({
+              count:this.state.count = 1
+              })
+            if(this.state.s_time[0] < this.state.min ){
+              this.state.s_time[0] = this.state.s_time[0] + this.state.count
+              mins.textContent = (this.state.s_time[0])
+            }
 
+          
         }} id="session-decrement"className='material-symbols-outlined material'>arrow_back_ios</span>{/*Down arrow*/}
       </div>
     </div>
@@ -117,6 +125,7 @@ class Timer extends React.Component{
       max:this.props.max
     }
   }
+  
   render(){
     return(
       <div className="timer-container">
@@ -125,7 +134,7 @@ class Timer extends React.Component{
         </div>
         <div className="time-left-container">
             <div id="time-left">
-              <h3 className="display-mins">{(this.state.s_time[0])}</h3>
+              <h3 className="display-mins">{this.state.s_time[0]}</h3>
               <h3 className="display-colon">:</h3>
               <h3 className="display-secs ">{this.state.s_time[1]}</h3>
             </div>
@@ -147,39 +156,43 @@ class Controls extends React.Component{
         count:this.props.count,
         play_pause:'Play_Arrow',
         c:0
-        }
-
+      }
       }
      
       Play_pause=()=>{
-
+        
         var mins = document.querySelector('#time-left>h3.display-mins')
         var secs = document.querySelector('#time-left>h3.display-secs')
+        var s_min = document.querySelector('#session-length')
+
         this.setState({
           c:this.state.c+=1
         })
         if(this.state.c % 2 !== 0){
           const Play=()=>{
+            
            this.setState({
             s_time: [this.state.s_time[0] = secs.textContent < 1 ? mins.textContent-=this.state.count : mins.textContent, this.state.s_time[1] = secs.textContent < (this.state.min-1) && secs.textContent > 0 ? secs.textContent : secs.textContent = 59],
-            intervalTime: this.state.intervalTime = 500,
+            intervalTime: this.state.intervalTime = 250,
             intervalFn: this.state.intervalFn = setInterval(() => {
-              if(this.state.s_time[0] >= 0 && this.state.s_time[1] > 0){
-                 this.setState({
-                  s_time: [this.state.s_time[0] = mins.textContent, this.state.s_time[1] -= this.state.count]})
-              
+                  if(this.state.s_time[0] >= 0 && this.state.s_time[1] > 0){
+                    this.setState({
+                      s_time: [this.state.s_time[0] = mins.textContent, 
+                      this.state.s_time[1] -= this.state.count]
+                  })
               mins.textContent = (this.state.s_time[0]) < 10 ? '0'+this.state.s_time[0] : this.state.s_time[0]
               mins.textContent = this.state.s_time[0]
               secs.textContent = moreThan10(this.state.s_time[1])
               }
               else if (this.state.s_time[0] > 0 && this.state.s_time[1] == 0){
                 this.setState({
-                  s_time: [this.state.s_time[0] -= this.state.count, this.state.s_time[1] = 60 ]})
-
+                  s_time: [this.state.s_time[0] -= this.state.count, 
+                  this.state.s_time[1] = 60 ]
+                })
               mins.textContent = this.state.s_time[0].toString().length < 2 ? moreThan10(this.state.s_time[0]) : this.state.s_time[0]
-              
               secs.textContent = moreThan10(this.state.s_time[1])
               }
+        
               else{
                 this.setState({
                   s_time: [this.state.s_time[0] = '00', this.state.s_time[1] = '00' ]})
@@ -244,7 +257,7 @@ var count = 1
 var interval = {
   fn: null,
   time:null
-};
+}
 
 const App = () => {
 useEffect(() => {
@@ -269,7 +282,7 @@ useEffect(() => {
       </div>
       <div className="configuration-container">
         <Break s_time={[(sessionMinutes),(sessionSeconds)]} b_time={[breakMinutes,breakSeconds]} min={min} max={max}/>
-        <Session s_time={[(sessionMinutes),(sessionSeconds)]} b_time={[breakMinutes,breakSeconds]} min={min} max={max}/>
+        <Session intervalFn={interval.fn} s_time={[(sessionMinutes),(sessionSeconds)]} b_time={[breakMinutes,breakSeconds]} min={min} max={max}/>
       </div>
       <div className="controls-container">
         <Controls s_time={[(sessionMinutes),(sessionSeconds)]} b_time={[breakMinutes,breakSeconds]} count ={count} min={min} max={max} intervalFn={interval.fn} intervalTime={interval.time}/>
