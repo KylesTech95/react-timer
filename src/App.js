@@ -1,7 +1,7 @@
 //"use strict";
 import './App.css';
 import { React, useEffect, useState } from 'react';
-import { MoreThan10, Minutes, Seconds } from './helpers';
+import { MoreThan10 } from './helpers';
 
 
 const accurateInterval = function(fn,time){
@@ -32,6 +32,7 @@ const [started,setStarted]=useState(false)
 const [breakLength, setBreakLength]=useState(BREAK_TIME)
 const [sessionLength, setSessionLength]=useState(SESSION_TIME)
 const [activeClock, setActiveClock] = useState('S')
+const [reset,setReset] = useState(0)
   return (
     <div id="wrapper">
       <div className="timer-title-container">
@@ -43,10 +44,16 @@ const [activeClock, setActiveClock] = useState('S')
         <TimeSetter type="break" label="Break-length" length={breakLength}
         setter={setBreakLength}/>
       </div>
-      <Display {...{started,activeClock,sessionLength,breakLength }}/>
-      <Controls {...{started,setStarted}}/>
+      <Display {...{reset,setActiveClock,started,activeClock,sessionLength,breakLength,setReset }}/>
+      <Controls {...{onReset:handleReset,setStarted}}/>
     </div>
   );
+  function handleReset(){
+    setReset(reset + 1)
+    setSessionLength(SESSION_TIME)
+    setBreakLength(BREAK_TIME)
+    setStarted(false)
+  }
 }
 const TimeSetter = ({type,label,setter,length}) => {
   function decrement(){
@@ -73,49 +80,57 @@ const TimeSetter = ({type,label,setter,length}) => {
   )
 }
 
-const Display = ({started,activeClock,sessionLength,breakLength}) => {
+const Display = ({started,setActiveClock,activeClock,sessionLength,breakLength}) => {
   const [timer,setTimer] = useState((activeClock=='S' ? sessionLength : breakLength)*60)
   useEffect(()=>{
     if(started){
-      const interval = accurateInterval(countDown,1000)
+      const interval = accurateInterval(countDown,250)
       return function cleanup(){
         interval.cancel()
       }
     }
-   
   }, [started])
-
   {/*Use Effect hook connects session-setter &  session-display*/}
   useEffect(()=>{
-    setTimer(sessionLength)
+    setTimer(sessionLength*60)
   },[sessionLength])
   {/*Array of dependencies*/}
   function formatClock(){
     const SECONDS_IN_MINUTES = 60
-    let minutes = Math.floor((timer*60)/SECONDS_IN_MINUTES)
-    let seconds = (timer*60)%60 
+    let minutes = Math.floor(timer/SECONDS_IN_MINUTES)
+    let seconds = timer % SECONDS_IN_MINUTES
     minutes = MoreThan10(minutes)
     seconds = MoreThan10(seconds)
     return minutes + ':' + seconds
   }
   return (
   <div className="display-container">
-    <div>{activeClock==='S' ? 'Session' : 'Break  '}</div>
+    <div>{activeClock==='S' ? 'Session' : 'Break'}</div>
     <div id="time-left">
       {formatClock()}
     </div>
     </div>
   )
   function countDown(){
-    setTimer(pre => pre - 1);
+    setTimer(pre => {
+      if(pre > 0){
+        return pre - 1
+      }
+      else if (pre == 0){
+        setActiveClock(ac=>ac === 'S' ? ac = 'B' : ac = 'S')
+        return pre;
+      }
+      else{
+        throw Error('error Kyle!')
+      }
+    });
   }
   
 }
 
-const Controls = ({started,setStarted}) => {
+const Controls = ({onReset,setStarted}) => {
 function handleStartStop(){
-  setStarted(strt=>!strt)
-  console.log(started)
+  setStarted(started=>!started)
 }
 
   return <div className="controls">
@@ -123,7 +138,7 @@ function handleStartStop(){
       <i className="material-symbols-outlined">play_pause</i>
     </button>
     <button id="restart">
-      <i className="material-symbols-outlined" onClick={null}>refresh</i>
+      <i className="material-symbols-outlined" onClick={onReset}>refresh</i>
     </button>
   </div>
 }
