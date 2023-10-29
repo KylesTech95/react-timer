@@ -1,151 +1,47 @@
-:root{
-  --night-light-bg:#333;
-  --day-light-bg:purple;
-  --day-light-color:#fff;
-  --night-light-color:gold;
-  --scale-effect:scale(1.10);
-  --scale-effect-ctrl:scale(7);
-  --rotate-effect:rotate(90deg)
-}
-*{
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-body{
+#wrapper{
   display: flex;
   width: 100%;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
+  align-items: center;
   height: 100vh;
 }
-.night{
-background: var(--night-light-bg);
-color:var(--night-light-color)
-}
-.day{
-background: var(--day-light-bg);
-color:var(--day-light-color)
-}
-
-.timer-title{
-  color:#fff;
-}
-.material-symbols-outlined {
-  font-variation-settings:
-  'FILL' 0,
-  'wght' 400,
-  'GRAD' 0,
-  'opsz' 24
-}
-
-#wrapper{
-  height:600px;
-  width: 100%;
+.length-setters{
   display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
-  gap: 1rem;
-
-  
+  align-items: center;
+  gap: 2rem;
 }
-
-.configuration-container{
+.setter-controls-container{
   display: flex;
-  gap: 1rem;
+  justify-content: space-evenly;
   align-items: center;
-  justify-content: center;
 }
-
-.session-controls,
-.break-controls{
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1rem;
-  gap: 10px;
-}
-
-#time-left{
-  font-size: 35px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.timer-container{
-  display:flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-  padding: 2rem 4rem;
-  border: 3.5px solid #fff; 
-  gap: 1rem;
-  border-radius: 50%;
-  box-shadow: inset 0 0 6px .25px #fff;
-}
-
-.material{
-  transition: .75s;
-  font-size: 35px;
-}
-
-.material:hover{
-transition: .25s;
-cursor: pointer;
-}
-
-.contain{
-  padding:1rem 3rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: .25rem;
-  border-radius: 20px;
-  transition: .75s;
-  margin-top: .25rem;
-}
-
-/*Arrows below*/
-.up,
-.down{
-  transform: rotate(90deg)
-}
-.up:hover,
-.down:hover{
-  transform: var(--scale-effect) var(--rotate-effect)/*add 90deg rotation to solidify it's position. Without this, the element will revert back to it's original position.*/
-}
-/*Arrows above*/
-
-
-/*Controls (Play,pause,refresh)*/
-.controls-container{
-  width: 100%;
-}
-.controls-actual-container{
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  margin:5rem 0 0 0 ;
-  
-}
-.contain:hover{
-  background: rgba(196, 27, 196, 0.642);
-  transition: .25s;
-}
-.controls-actual-container>div>span{
-  padding: 0 .25rem;
-  transition: .75s;
-  transform: scale(6);
-}
-.controls-actual-container>div>span:hover{
-  transform: var(--scale-effect-ctrl);
-  transition: .25s ease;
+#session-increment,
+#session-decrement,
+#break-increment,
+#break-decrement{
+  border: 1px solid red;
+  transition: .3s;
   cursor: pointer;
 }
-
-
-/*Controls (Play,pause,refresh)*/
+#session-increment:hover,
+#session-decrement:hover,
+#break-increment:hover,
+#break-decrement:hover{
+  transition: .3s;
+  transform: scale(1.10);
+}
+#time-left{
+  font-size: 30px;
+}
+.display-container{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: .5rem;
+  border: 2px solid #333;
+  padding: 2rem 4rem;
+  border-radius: 20px;
+}
