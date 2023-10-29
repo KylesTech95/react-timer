@@ -45,3 +45,13 @@
   padding: 2rem 4rem;
   border-radius: 20px;
 }
+.controls{
+  margin-top: 1rem;
+  display: flex;
+  gap: 1rem;
+}
+#start-stop>i,
+#restart>i{
+  border: none;
+  font-size: 25px;
+}
