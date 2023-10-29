@@ -45,14 +45,16 @@ const [reset,setReset] = useState(0)
         setter={setBreakLength}/>
       </div>
       <Display {...{reset,setActiveClock,started,activeClock,sessionLength,breakLength,setReset }}/>
-      <Controls {...{onReset:handleReset,setStarted}}/>
+      <Controls {...{ setStarted, onReset:handleReset}} />
     </div>
   );
+
   function handleReset(){
-    setReset(reset + 1)
-    setSessionLength(SESSION_TIME)
-    setBreakLength(BREAK_TIME)
-    setStarted(false)
+    setBreakLength(BREAK_TIME);
+    setSessionLength(SESSION_TIME);
+    setReset(reset + 1);
+    setStarted(false);
+  
   }
 }
 const TimeSetter = ({type,label,setter,length}) => {
@@ -95,6 +97,9 @@ const Display = ({started,setActiveClock,activeClock,sessionLength,breakLength})
     setTimer(sessionLength*60)
   },[sessionLength])
   {/*Array of dependencies*/}
+
+
+
   function formatClock(){
     const SECONDS_IN_MINUTES = 60
     let minutes = Math.floor(timer/SECONDS_IN_MINUTES)
@@ -116,8 +121,9 @@ const Display = ({started,setActiveClock,activeClock,sessionLength,breakLength})
       if(pre > 0){
         return pre - 1
       }
-      else if (pre == 0){
-        setActiveClock(ac=>ac === 'S' ? ac = 'B' : ac = 'S')
+      else if (pre === 0){
+
+        setActiveClock('S' ? 'B' : 'S')
         return pre;
       }
       else{
