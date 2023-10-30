@@ -40,9 +40,9 @@ const [reset,setReset] = useState(0)
       </div>
       <div className="length-setters">
         <TimeSetter type="session" label="Session-length" length={sessionLength}
-        setter={setSessionLength}/>
+        setter={setSessionLength} disabled={started}/>
         <TimeSetter type="break" label="Break-length" length={breakLength}
-        setter={setBreakLength}/>
+        setter={setBreakLength} disabled={started} />
       </div>
       <Display {...{reset,setActiveClock,started,activeClock,sessionLength,breakLength,setReset }}/>
       <Controls {...{ setStarted, onReset:handleReset}} />
@@ -54,15 +54,27 @@ const [reset,setReset] = useState(0)
     setSessionLength(SESSION_TIME);
     setReset(reset + 1);
     setStarted(false);
+    setActiveClock('S')
   
   }
 }
-const TimeSetter = ({type,label,setter,length}) => {
+const TimeSetter = ({type,label,setter,length,disabled}) => {
+  
   function decrement(){
-    return length > 1 ? setter(length -1) : length
+    if(disabled){
+      return;
+    } 
+    else{
+      return  length > 1 ? setter(length - 1) : length;
+    }
   }
   function increment(){
-    return length < 60 ? setter(length + 1) : length
+    if(disabled){
+      return;
+    } 
+    else{
+      return length < 60 ? setter(length +  1) : length;
+    }
   }
   return (
       <div className={`${type}-setter`}>
@@ -98,8 +110,6 @@ const Display = ({started,setActiveClock,activeClock,sessionLength,breakLength})
   },[sessionLength])
   {/*Array of dependencies*/}
 
-
-
   function formatClock(){
     const SECONDS_IN_MINUTES = 60
     let minutes = Math.floor(timer/SECONDS_IN_MINUTES)
@@ -108,20 +118,25 @@ const Display = ({started,setActiveClock,activeClock,sessionLength,breakLength})
     seconds = MoreThan10(seconds)
     return minutes + ':' + seconds
   }
+  useEffect(()=>{
+    setTimer((activeClock == 'B' ? breakLength : sessionLength)*60)
+  },[activeClock])
+
   return (
   <div className="display-container">
-    <div>{activeClock==='S' ? 'Session' : 'Break'}</div>
+    <div id='timer-label'>{activeClock === 'S' ? 'Session' : 'Break'}</div>
     <div id="time-left">
       {formatClock()}
     </div>
     </div>
   )
+  
   function countDown(){
     setTimer(pre => {
       if(pre > 0){
         return pre - 1
       }
-      else if (pre === 0){
+      else if (pre == 0){
 
         setActiveClock('S' ? 'B' : 'S')
         return pre;
@@ -140,11 +155,11 @@ function handleStartStop(){
 }
 
   return <div className="controls">
-    <button id="start-stop" onClick={handleStartStop}>
+    <button id="start_stop" onClick={handleStartStop}>
       <i className="material-symbols-outlined">play_pause</i>
     </button>
     <button id="restart">
-      <i className="material-symbols-outlined" onClick={onReset}>refresh</i>
+      <i id="reset" className="material-symbols-outlined" onClick={onReset}>refresh</i>
     </button>
   </div>
 }
