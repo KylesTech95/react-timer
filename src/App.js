@@ -1,7 +1,9 @@
 //"use strict";
 import './App.css';
-import { React, useEffect, useState } from 'react';
+import { React, useEffect, useState, useRef } from 'react';
 import { MoreThan10 } from './helpers';
+
+
 
 
 const accurateInterval = function(fn,time){
@@ -28,6 +30,8 @@ const App = () => {
 const BREAK_TIME=5,
       SESSION_TIME=25
 
+const [beep,setBeep] = useState(true)
+const [lastMinute,setLastMinute] = useState('#000')
 const [started,setStarted]=useState(false)
 const [breakLength, setBreakLength]=useState(BREAK_TIME)
 const [sessionLength, setSessionLength]=useState(SESSION_TIME)
@@ -44,7 +48,7 @@ const [reset,setReset] = useState(0)
         <TimeSetter type="break" label="Break-length" length={breakLength}
         setter={setBreakLength} disabled={started} />
       </div>
-      <Display {...{reset,setActiveClock,started,activeClock,sessionLength,breakLength,setReset }}/>
+      <Display {...{reset,setActiveClock,started,activeClock,sessionLength,breakLength,setReset,lastMinute,setLastMinute, beep,setBeep }}/>
       <Controls {...{ setStarted, onReset:handleReset}} />
     </div>
   );
@@ -55,9 +59,9 @@ const [reset,setReset] = useState(0)
     setReset(reset + 1);
     setStarted(false);
     setActiveClock('S')
-  
   }
 }
+
 const TimeSetter = ({type,label,setter,length,disabled}) => {
   
   function decrement(){
@@ -93,22 +97,33 @@ const TimeSetter = ({type,label,setter,length,disabled}) => {
       </div>
   )
 }
+const Display = ({started,setActiveClock,activeClock,sessionLength,breakLength,lastMinute,setLastMinute,beep,setBeep}) => {
 
-const Display = ({started,setActiveClock,activeClock,sessionLength,breakLength}) => {
+  const audioRef = useRef()
   const [timer,setTimer] = useState((activeClock=='S' ? sessionLength : breakLength)*60)
   useEffect(()=>{
+    if(timer!==sessionLength){
+      setActiveClock('S')
+      setTimer(timer=>timer)
+    }
+  },[timer])
+  useEffect(()=>{
     if(started){
-      const interval = accurateInterval(countDown,250)
+      const interval = accurateInterval(countDown,100)
       return function cleanup(){
         interval.cancel()
       }
     }
   }, [started])
-  {/*Use Effect hook connects session-setter &  session-display*/}
   useEffect(()=>{
     setTimer(sessionLength*60)
   },[sessionLength])
-  {/*Array of dependencies*/}
+  useEffect(()=>{
+    setLastMinute(timer < (1*60) ? 'red' : '#000')
+  },[timer])
+  useEffect(()=>{
+    setTimer((activeClock == 'B' ? breakLength : sessionLength)*60)
+  },[activeClock])
 
   function formatClock(){
     const SECONDS_IN_MINUTES = 60
@@ -118,27 +133,30 @@ const Display = ({started,setActiveClock,activeClock,sessionLength,breakLength})
     seconds = MoreThan10(seconds)
     return minutes + ':' + seconds
   }
-  useEffect(()=>{
-    setTimer((activeClock == 'B' ? breakLength : sessionLength)*60)
-  },[activeClock])
-
   return (
-  <div className="display-container">
+  <div className="display-container" style={{'color':`${lastMinute}`}}>
     <div id='timer-label'>{activeClock === 'S' ? 'Session' : 'Break'}</div>
     <div id="time-left">
       {formatClock()}
     </div>
+    <audio 
+      id="beep" 
+      preload="auto"
+      ref={audioRef}
+      src="pending"/>
     </div>
+    
   )
-  
   function countDown(){
     setTimer(pre => {
       if(pre > 0){
         return pre - 1
       }
-      else if (pre == 0){
-
-        setActiveClock('S' ? 'B' : 'S')
+      else if (pre < 1){
+        setActiveClock(pre =>pre =='S' ? pre = 'B' : pre = 'S')
+        var audioEl = audioRef.current;
+        audioEl.play();
+        
         return pre;
       }
       else{
