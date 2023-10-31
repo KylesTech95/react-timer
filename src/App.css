@@ -66,17 +66,21 @@
   position: absolute;
 }
 #start_stop>i,
+#start_stop_float>i,
+#restart-float>i,
 #restart>i{
   border: none;
   font-size: 12rem;
   transition: .3s;
 }
+
 #start_stop>i:hover,
 #restart>i:hover{
-  transition: .3s;
-  transform: scale(1.15);
+  transition: .25s;
+  transform: scale(1.05);
   cursor: pointer;
 }
+
 .pause:hover{
   text-shadow: 0px 0px 9px rgb(247, 0, 160);
 }
@@ -84,11 +88,19 @@
   text-shadow: 0px 0px 9px lime;
 }
 #restart>i:hover{
-  text-shadow: 0px 0px 2px ghostWhite;
+  text-shadow: 0px 0px 4.5px ghostWhite;
 }
-.reset-container{
+.reset-container,
+.reset-container-float{
   right: 15%;
 }
-.start_stop-container{
+
+.start_stop-container,
+.start_stop-container-float{
   left: 15%;
+}
+
+.start_stop-container,
+.reset-container{
+  z-index:999;
 }

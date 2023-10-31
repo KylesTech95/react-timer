@@ -1,29 +1,12 @@
 //"use strict";
 import './App.css';
 import { React, useEffect, useState, useRef } from 'react';
-import { MoreThan10 } from './helpers';
+import TimeSetter from './timesetter.js'
+import Display from './display.js'
+import Controls from './controls.js'
 
 
-const accurateInterval = function(fn,time){
-  var cancel,nextAt,timeout,wrapper;
-  nextAt = new Date().getTime() + time;
-  timeout = null;
-  //Wrapper function for set Timeout
-  wrapper = function(){
-    nextAt+=time;
-    timeout = setTimeout(wrapper,nextAt - new Date().getTime());
-    return fn()
-  };
-  //cancel function
-  cancel = function(){
-    return clearTimeout(timeout)
-  };
-  //set Timeout
-  timeout = setTimeout(wrapper,nextAt - new Date().getTime());
-  return {
-    cancel:cancel
-  }
-}
+
 const App = () => {
 const BREAK_TIME=5,
       SESSION_TIME=25
@@ -64,138 +47,4 @@ const audioRef = useRef();
   }
 }
 
-const TimeSetter = ({type,label,setter,length,disabled}) => {
-  
-  function decrement(){
-    if(disabled){
-      return;
-    } 
-    else{
-      return  length > 1 ? setter(length - 1) : length;
-    }
-  }
-  function increment(){
-    if(disabled){
-      return;
-    } 
-    else{
-      return length < 60 ? setter(length +  1) : length;
-    }
-  }
-  return (
-      <div className={`${type}-setter`}>
-        <h2 id={`${type}-label`}>{label}</h2>
-          <div className="setter-controls-container">
-            <span onClick={increment} id={`${type}-increment`} className="material-symbols-outlined">
-              arrow_drop_up
-            </span>
-            
-            <h3 id={`${type}-length`}>{length}</h3>
-            
-            <span onClick={decrement} id={`${type}-decrement`} className="material-symbols-outlined">
-              arrow_drop_down
-            </span>
-          </div>
-      </div>
-  )
-}
-const Display = ({started,setActiveClock,activeClock,sessionLength,breakLength,lastMinute,setLastMinute,reset,audioRef}) => {
-
-  const [timer,setTimer] = useState((activeClock=='S' ? sessionLength : breakLength)*60)
-
-  useEffect(()=>{
-    if(started){
-      const interval = accurateInterval(countDown,1000)
-      return function cleanup(){
-        interval.cancel()
-      }
-    }
-  }, [started])
-  useEffect(()=>{
-    var audioEl = audioRef.current;
-      audioEl.pause()
-      audioEl.currentTime=0;
-      audioEl.load()   
-  },[reset])
-  useEffect(()=>{
-    setTimer(sessionLength*60)
-  },[sessionLength])
-  useEffect(()=>{
-    setLastMinute(timer < (1*60) ? 'red' : '#fff')
-  },[timer])
-  useEffect(()=>{
-    setTimer((activeClock == 'B' ? breakLength : sessionLength)*60)
-  },[activeClock])
-
-  function formatClock(){
-    const SECONDS_IN_MINUTES = 60
-    let minutes = Math.floor(timer/SECONDS_IN_MINUTES)
-    let seconds = timer % SECONDS_IN_MINUTES
-    minutes = MoreThan10(minutes)
-    seconds = MoreThan10(seconds)
-    return minutes + ':' + seconds
-  }
-  return (
-  <div className="display-container" style={{'color':`${lastMinute}`}}>
-    <div id='timer-label'>{activeClock === 'S' ? 'Session' : 'Break'}</div>
-    <div id="time-left">
-      {formatClock()}
-    </div>
-    <audio 
-      id="beep" 
-      preload="auto"
-      ref={audioRef}
-      src="https://raw.githubusercontent.com/freeCodeCamp/cdn/master/build/testable-projects-fcc/audio/BeepSound.wav"/>
-    </div>
-    
-  )
-  function countDown(){
-    setTimer(pre => {
-      if(pre > 0){
-        return pre - 1
-      }
-      else if (pre < 1){
-        setActiveClock(pre =>pre =='S' ? pre = 'B' : pre = 'S')
-      var audioEl = audioRef.current;
-          audioEl.play();
-        return pre;
-      }
-      else{
-        throw Error('error Kyle!')
-      }
-    });
-  }
-  
-}
-
-const Controls = ({onReset,setStarted,started}) => {
-function handleStartStop(){
-  setStarted(started=>!started)
-}
-useEffect(()=>{
-  var play_pause = document.querySelector('#start_stop > i')
-if(started){
-  play_pause.classList.remove('play')
-play_pause.classList.add('pause')
-}
-else{
-  play_pause.classList.remove('pause')
-  play_pause.classList.add('play')
-}
-},[started])
-
-  return <div className="controls">
-    <div className="start_stop-container">
-      <span id="start_stop" onClick={handleStartStop}>
-        <i className="material-symbols-outlined">play_pause</i>
-      </span>
-    </div>
-    
-    <div className="reset-container">
-      <span id="restart">
-        <i id="reset" className="material-symbols-outlined" onClick={onReset}>refresh</i>
-      </span>
-    </div>
-  </div>
-}
 export default App;
