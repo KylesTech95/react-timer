@@ -5,8 +5,11 @@
   justify-content: center;
   align-items: center;
   height: 100vh;
+  background:#333;
+  color: #fff;
 }
 .length-setters{
+  width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -14,23 +17,28 @@
 }
 .setter-controls-container{
   display: flex;
-  justify-content: space-evenly;
+  gap: 0;
+  justify-content: center;
   align-items: center;
 }
 #session-increment,
 #session-decrement,
 #break-increment,
 #break-decrement{
-  border: 1px solid red;
   transition: .3s;
   cursor: pointer;
+  font-size: 80px;
+  user-select: none;
+  -ms-user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
 }
 #session-increment:hover,
 #session-decrement:hover,
 #break-increment:hover,
 #break-decrement:hover{
   transition: .3s;
-  transform: scale(1.10);
+  transform: scale(1.25);
 }
 #time-left{
   font-size: 30px;
@@ -41,17 +49,46 @@
   justify-content: center;
   flex-direction: column;
   gap: .5rem;
-  border: 2px solid #333;
   padding: 2rem 4rem;
   border-radius: 20px;
+  font-size: 3rem;
+  
 }
 .controls{
   margin-top: 1rem;
   display: flex;
-  gap: 1rem;
+  align-items: start;
+  position: relative;
+  margin-bottom: 6rem;
+  width: 100%;
 }
-#start-stop>i,
+.controls>div{
+  position: absolute;
+}
+#start_stop>i,
 #restart>i{
   border: none;
-  font-size: 25px;
+  font-size: 12rem;
+  transition: .3s;
+}
+#start_stop>i:hover,
+#restart>i:hover{
+  transition: .3s;
+  transform: scale(1.15);
+  cursor: pointer;
+}
+.pause:hover{
+  text-shadow: 0px 0px 9px rgb(247, 0, 160);
+}
+.play:hover{
+  text-shadow: 0px 0px 9px lime;
+}
+#restart>i:hover{
+  text-shadow: 0px 0px 2px ghostWhite;
+}
+.reset-container{
+  right: 15%;
+}
+.start_stop-container{
+  left: 15%;
 }

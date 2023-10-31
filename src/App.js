@@ -4,8 +4,6 @@ import { React, useEffect, useState, useRef } from 'react';
 import { MoreThan10 } from './helpers';
 
 
-
-
 const accurateInterval = function(fn,time){
   var cancel,nextAt,timeout,wrapper;
   nextAt = new Date().getTime() + time;
@@ -31,7 +29,7 @@ const BREAK_TIME=5,
       SESSION_TIME=25
 
 const [beep,setBeep] = useState(true)
-const [lastMinute,setLastMinute] = useState('#000')
+const [lastMinute,setLastMinute] = useState('#fff')
 const [started,setStarted]=useState(false)
 const [breakLength, setBreakLength]=useState(BREAK_TIME)
 const [sessionLength, setSessionLength]=useState(SESSION_TIME)
@@ -50,7 +48,7 @@ const audioRef = useRef();
         setter={setBreakLength} disabled={started} />
       </div>
       <Display {...{reset,setActiveClock,started,activeClock,sessionLength,breakLength,setReset,lastMinute,setLastMinute, beep,setBeep,reset,audioRef }}/>
-      <Controls {...{ setStarted, onReset:handleReset}} />
+      <Controls {...{ setStarted, onReset:handleReset,started}} />
     </div>
   );
 
@@ -107,7 +105,7 @@ const Display = ({started,setActiveClock,activeClock,sessionLength,breakLength,l
 
   useEffect(()=>{
     if(started){
-      const interval = accurateInterval(countDown,100)
+      const interval = accurateInterval(countDown,1000)
       return function cleanup(){
         interval.cancel()
       }
@@ -123,7 +121,7 @@ const Display = ({started,setActiveClock,activeClock,sessionLength,breakLength,l
     setTimer(sessionLength*60)
   },[sessionLength])
   useEffect(()=>{
-    setLastMinute(timer < (1*60) ? 'red' : '#000')
+    setLastMinute(timer < (1*60) ? 'red' : '#fff')
   },[timer])
   useEffect(()=>{
     setTimer((activeClock == 'B' ? breakLength : sessionLength)*60)
@@ -170,18 +168,34 @@ const Display = ({started,setActiveClock,activeClock,sessionLength,breakLength,l
   
 }
 
-const Controls = ({onReset,setStarted}) => {
+const Controls = ({onReset,setStarted,started}) => {
 function handleStartStop(){
   setStarted(started=>!started)
 }
+useEffect(()=>{
+  var play_pause = document.querySelector('#start_stop > i')
+if(started){
+  play_pause.classList.remove('play')
+play_pause.classList.add('pause')
+}
+else{
+  play_pause.classList.remove('pause')
+  play_pause.classList.add('play')
+}
+},[started])
 
   return <div className="controls">
-    <button id="start_stop" onClick={handleStartStop}>
-      <i className="material-symbols-outlined">play_pause</i>
-    </button>
-    <button id="restart">
-      <i id="reset" className="material-symbols-outlined" onClick={onReset}>refresh</i>
-    </button>
+    <div className="start_stop-container">
+      <span id="start_stop" onClick={handleStartStop}>
+        <i className="material-symbols-outlined">play_pause</i>
+      </span>
+    </div>
+    
+    <div className="reset-container">
+      <span id="restart">
+        <i id="reset" className="material-symbols-outlined" onClick={onReset}>refresh</i>
+      </span>
+    </div>
   </div>
 }
 export default App;
