@@ -104,3 +104,28 @@
 .reset-container{
   z-index:999;
 }
+@media screen and (max-width:600px) {
+#start_stop>i,
+#start_stop_float>i,
+#restart-float>i,
+#restart>i{
+  font-size: 6rem;
+  transition: .5s;
+}
+.length-setters{
+  flex-direction: column;
+}
+.controls{
+  position: absolute;
+  bottom: 100px;
+}
+.reset-container,
+.reset-container-float{
+  right: 5%;
+}
+
+.start_stop-container,
+.start_stop-container-float{
+  left: 5%;
+}
+}
