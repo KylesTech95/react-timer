@@ -54,6 +54,7 @@ const audioRef = useRef();
     </div>
   );
 
+  
   function handleReset(){
     audioRef.current.pause()
     audioRef.current.currentTime = 0
