@@ -37,6 +37,7 @@ const [breakLength, setBreakLength]=useState(BREAK_TIME)
 const [sessionLength, setSessionLength]=useState(SESSION_TIME)
 const [activeClock, setActiveClock] = useState('S')
 const [reset,setReset] = useState(0)
+const audioRef = useRef();
   return (
     <div id="wrapper">
       <div className="timer-title-container">
@@ -48,12 +49,14 @@ const [reset,setReset] = useState(0)
         <TimeSetter type="break" label="Break-length" length={breakLength}
         setter={setBreakLength} disabled={started} />
       </div>
-      <Display {...{reset,setActiveClock,started,activeClock,sessionLength,breakLength,setReset,lastMinute,setLastMinute, beep,setBeep }}/>
+      <Display {...{reset,setActiveClock,started,activeClock,sessionLength,breakLength,setReset,lastMinute,setLastMinute, beep,setBeep,reset,audioRef }}/>
       <Controls {...{ setStarted, onReset:handleReset}} />
     </div>
   );
 
   function handleReset(){
+    audioRef.current.pause()
+    audioRef.current.currentTime = 0
     setBreakLength(BREAK_TIME);
     setSessionLength(SESSION_TIME);
     setReset(reset + 1);
@@ -97,16 +100,10 @@ const TimeSetter = ({type,label,setter,length,disabled}) => {
       </div>
   )
 }
-const Display = ({started,setActiveClock,activeClock,sessionLength,breakLength,lastMinute,setLastMinute,beep,setBeep}) => {
+const Display = ({started,setActiveClock,activeClock,sessionLength,breakLength,lastMinute,setLastMinute,reset,audioRef}) => {
 
-  const audioRef = useRef()
   const [timer,setTimer] = useState((activeClock=='S' ? sessionLength : breakLength)*60)
-  useEffect(()=>{
-    if(timer!==sessionLength){
-      setActiveClock('S')
-      setTimer(timer=>timer)
-    }
-  },[timer])
+
   useEffect(()=>{
     if(started){
       const interval = accurateInterval(countDown,100)
@@ -115,6 +112,12 @@ const Display = ({started,setActiveClock,activeClock,sessionLength,breakLength,l
       }
     }
   }, [started])
+  useEffect(()=>{
+    var audioEl = audioRef.current;
+      audioEl.pause()
+      audioEl.currentTime=0;
+      audioEl.load()   
+  },[reset])
   useEffect(()=>{
     setTimer(sessionLength*60)
   },[sessionLength])
@@ -143,7 +146,7 @@ const Display = ({started,setActiveClock,activeClock,sessionLength,breakLength,l
       id="beep" 
       preload="auto"
       ref={audioRef}
-      src="pending"/>
+      src="https://raw.githubusercontent.com/freeCodeCamp/cdn/master/build/testable-projects-fcc/audio/BeepSound.wav"/>
     </div>
     
   )
@@ -154,9 +157,8 @@ const Display = ({started,setActiveClock,activeClock,sessionLength,breakLength,l
       }
       else if (pre < 1){
         setActiveClock(pre =>pre =='S' ? pre = 'B' : pre = 'S')
-        var audioEl = audioRef.current;
-        audioEl.play();
-        
+      var audioEl = audioRef.current;
+          audioEl.play();
         return pre;
       }
       else{
